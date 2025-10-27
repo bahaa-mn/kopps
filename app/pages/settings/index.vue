@@ -1,156 +1,99 @@
 <script setup lang="ts">
-import * as z from 'zod'
 import type { FormSubmitEvent } from '@nuxt/ui'
+import * as z from 'zod'
 
-const fileRef = ref<HTMLInputElement>()
+const { t } = useI18n()
 
-const profileSchema = z.object({
-  name: z.string().min(2, 'Too short'),
-  email: z.string().email('Invalid email'),
-  username: z.string().min(2, 'Too short'),
-  avatar: z.string().optional(),
-  bio: z.string().optional()
+useSeoMeta({
+  title: t('settings.general.title'),
 })
 
-type ProfileSchema = z.output<typeof profileSchema>
-
-const profile = reactive<Partial<ProfileSchema>>({
-  name: 'Benjamin Canac',
-  email: 'ben@nuxtlabs.com',
-  username: 'benjamincanac',
-  avatar: undefined,
-  bio: undefined
-})
 const toast = useToast()
-async function onSubmit(event: FormSubmitEvent<ProfileSchema>) {
-  toast.add({
-    title: 'Success',
-    description: 'Your settings have been updated.',
-    icon: 'i-lucide-check',
-    color: 'success'
-  })
-  console.log(event.data)
-}
+const { user } = useUserSession()
 
-function onFileChange(e: Event) {
-  const input = e.target as HTMLInputElement
+const schema = z.object({
+  name: z.string(),
+  email: z.email()
+})
 
-  if (!input.files?.length) {
+type FormData = z.output<typeof schema>
+
+const state = reactive<Partial<FormData>>({
+  name: user.value?.name,
+  email: user.value?.email
+})
+
+const hasChanges = computed(() => {
+  return state.name?.trim() !== user.value?.name?.trim()
+    || state.email?.trim() !== user.value?.email?.trim()
+})
+
+async function submit(_event: FormSubmitEvent<FormData>) {
+  if (!hasChanges.value) {
+    toast.add({
+      title: $t('error.settings.profile.noChanges.title'),
+      description: $t('error.settings.profile.noChanges.description'),
+      icon: 'solar:info-circle-broken',
+      color: 'info'
+    })
     return
   }
 
-  profile.avatar = URL.createObjectURL(input.files[0]!)
-}
-
-function onFileClick() {
-  fileRef.value?.click()
+  toast.add({
+    title: $t('settings.general.toast.success.title'),
+    description: $t('settings.general.toast.success.description'),
+    icon: 'solar:check-circle-broken',
+    color: 'success'
+  })
 }
 </script>
 
 <template>
   <UForm
     id="settings"
-    :schema="profileSchema"
-    :state="profile"
-    @submit="onSubmit"
+    :schema
+    :state
+    @submit="submit"
   >
     <UPageCard
-      title="Profile"
-      description="These informations will be displayed publicly."
+      :title="$t('settings.general.profile.title')"
+      :description="$t('settings.general.profile.description')"
       variant="naked"
       orientation="horizontal"
       class="mb-4"
     >
       <UButton
         form="settings"
-        label="Save changes"
-        color="neutral"
-        type="submit"
         class="w-fit lg:ms-auto"
+        :label="$t('action.save')"
+        color="neutral"
+        :variant="hasChanges ? 'solid' : 'soft'"
+        :disabled="!hasChanges"
+        type="submit"
       />
     </UPageCard>
 
     <UPageCard variant="subtle">
       <UFormField
         name="name"
-        label="Name"
-        description="Will appear on receipts, invoices, and other communication."
-        required
+        :label="$t('name')"
         class="flex max-sm:flex-col justify-between items-start gap-4"
       >
         <UInput
-          v-model="profile.name"
+          v-model="state.name"
           autocomplete="off"
         />
       </UFormField>
       <USeparator />
       <UFormField
         name="email"
-        label="Email"
-        description="Used to sign in, for email receipts and product updates."
-        required
+        :label="$t('email')"
         class="flex max-sm:flex-col justify-between items-start gap-4"
       >
         <UInput
-          v-model="profile.email"
+          v-model="state.email"
           type="email"
           autocomplete="off"
-        />
-      </UFormField>
-      <USeparator />
-      <UFormField
-        name="username"
-        label="Username"
-        description="Your unique username for logging in and your profile URL."
-        required
-        class="flex max-sm:flex-col justify-between items-start gap-4"
-      >
-        <UInput
-          v-model="profile.username"
-          type="username"
-          autocomplete="off"
-        />
-      </UFormField>
-      <USeparator />
-      <UFormField
-        name="avatar"
-        label="Avatar"
-        description="JPG, GIF or PNG. 1MB Max."
-        class="flex max-sm:flex-col justify-between sm:items-center gap-4"
-      >
-        <div class="flex flex-wrap items-center gap-3">
-          <UAvatar
-            :src="profile.avatar"
-            :alt="profile.name"
-            size="lg"
-          />
-          <UButton
-            label="Choose"
-            color="neutral"
-            @click="onFileClick"
-          />
-          <input
-            ref="fileRef"
-            type="file"
-            class="hidden"
-            accept=".jpg, .jpeg, .png, .gif"
-            @change="onFileChange"
-          >
-        </div>
-      </UFormField>
-      <USeparator />
-      <UFormField
-        name="bio"
-        label="Bio"
-        description="Brief description for your profile. URLs are hyperlinked."
-        class="flex max-sm:flex-col justify-between items-start gap-4"
-        :ui="{ container: 'w-full' }"
-      >
-        <UTextarea
-          v-model="profile.bio"
-          :rows="5"
-          autoresize
-          class="w-full"
         />
       </UFormField>
     </UPageCard>

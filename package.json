@@ -8,21 +8,32 @@
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
     "lint": "eslint .",
-    "typecheck": "nuxt typecheck"
+    "typecheck": "nuxt typecheck",
+    "db:gen": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate"
   },
   "dependencies": {
-    "@iconify-json/lucide": "^1.2.71",
-    "@iconify-json/simple-icons": "^1.2.55",
+    "@nuxt/image": "^1.11.0",
     "@nuxt/ui": "^4.1.0",
-    "@unovis/ts": "^1.6.1",
-    "@unovis/vue": "^1.6.1",
+    "@nuxtjs/i18n": "10.1.0",
+    "@standard-schema/spec": "^1.0.0",
     "@vueuse/nuxt": "^13.9.0",
-    "date-fns": "^4.1.0",
+    "better-sqlite3": "^12.4.1",
+    "drizzle-orm": "^0.44.7",
     "nuxt": "^4.2.0",
+    "nuxt-auth-utils": "0.5.25",
+    "nuxt-og-image": "^5.1.12",
+    "pg": "^8.16.3",
     "zod": "^4.1.12"
   },
   "devDependencies": {
+    "@antfu/eslint-config": "^5.4.1",
+    "@iconify-json/lucide": "^1.2.71",
+    "@iconify-json/simple-icons": "^1.2.56",
+    "@iconify-json/solar": "^1.2.4",
     "@nuxt/eslint": "^1.9.0",
+    "@types/pg": "^8.15.5",
+    "drizzle-kit": "^0.31.5",
     "eslint": "^9.38.0",
     "typescript": "^5.9.3",
     "vue-tsc": "^3.1.2"

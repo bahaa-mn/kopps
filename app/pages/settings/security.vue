@@ -1,10 +1,16 @@
 <script setup lang="ts">
-import * as z from 'zod'
 import type { FormError } from '@nuxt/ui'
+import * as z from 'zod'
+
+const { t } = useI18n()
+
+useSeoMeta({
+  title: t('settings.security.title'),
+})
 
 const passwordSchema = z.object({
-  current: z.string().min(8, 'Must be at least 8 characters'),
-  new: z.string().min(8, 'Must be at least 8 characters')
+  current: z.string().min(8, $t('settings.security.password.current.placeholder')),
+  new: z.string().min(8, $t('settings.security.password.new.placeholder'))
 })
 
 type PasswordSchema = z.output<typeof passwordSchema>
@@ -14,10 +20,14 @@ const password = reactive<Partial<PasswordSchema>>({
   new: undefined
 })
 
-const validate = (state: Partial<PasswordSchema>): FormError[] => {
+const canChangePassword = computed(() => {
+  return password.current && password.new && password.current !== password.new
+})
+
+function validate(state: Partial<PasswordSchema>): FormError[] {
   const errors: FormError[] = []
   if (state.current && state.new && state.current === state.new) {
-    errors.push({ name: 'new', message: 'Passwords must be different' })
+    errors.push({ name: 'new', message: $t('settings.security.password.new.error.duplicate') })
   }
   return errors
 }
@@ -25,21 +35,22 @@ const validate = (state: Partial<PasswordSchema>): FormError[] => {
 
 <template>
   <UPageCard
-    title="Password"
-    description="Confirm your current password before setting a new one."
+    :title="$t('password')"
+    :description="$t('settings.security.password.description')"
     variant="subtle"
   >
     <UForm
+      class="flex flex-col gap-4 max-w-xs"
       :schema="passwordSchema"
       :state="password"
       :validate="validate"
-      class="flex flex-col gap-4 max-w-xs"
+      :validate-on="[]"
     >
       <UFormField name="current">
         <UInput
           v-model="password.current"
           type="password"
-          placeholder="Current password"
+          :placeholder="$t('settings.security.password.current.placeholder')"
           class="w-full"
         />
       </UFormField>
@@ -48,22 +59,55 @@ const validate = (state: Partial<PasswordSchema>): FormError[] => {
         <UInput
           v-model="password.new"
           type="password"
-          placeholder="New password"
+          :placeholder="$t('settings.security.password.new.placeholder')"
           class="w-full"
         />
       </UFormField>
 
-      <UButton label="Update" class="w-fit" type="submit" />
+      <UButton
+        class="w-fit"
+        type="submit"
+        :disabled="!canChangePassword"
+        :label="$t('settings.security.password.update.label')"
+      />
     </UForm>
   </UPageCard>
 
   <UPageCard
-    title="Account"
-    description="No longer want to use our service? You can delete your account here. This action is not reversible. All information related to this account will be deleted permanently."
-    class="bg-gradient-to-tl from-error/10 from-5% to-default"
+    :title="$t('settings.security.account.title')"
+    :description="$t('settings.security.account.description')"
+    class="bg-gradient-to-tl from-error/10 from-5% to-default whitespace-pre-line"
   >
     <template #footer>
-      <UButton label="Delete account" color="error" />
+      <UModal
+        :title="$t('settings.security.account.delete.modal.title')"
+        :description="$t('settings.security.account.delete.modal.description')"
+      >
+        <UButton
+          :label="$t('action.delete')"
+          color="error"
+        />
+
+        <template #body>
+          <p class="mb-4">
+            {{ $t('settings.security.account.delete.modal.body') }}
+          </p>
+        </template>
+
+        <template #footer>
+          <div class="w-full flex justify-end gap-2">
+            <UButton
+              :label="$t('action.cancel')"
+              variant="outline"
+              color="neutral"
+            />
+            <UButton
+              :label="$t('action.delete')"
+              color="error"
+            />
+          </div>
+        </template>
+      </UModal>
     </template>
   </UPageCard>
 </template>

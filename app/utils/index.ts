@@ -1,7 +1,5 @@
-export function randomInt(min: number, max: number): number {
-  return Math.floor(Math.random() * (max - min + 1)) + min
-}
-
-export function randomFrom<T>(array: T[]): T {
-  return array[Math.floor(Math.random() * array.length)]!
+export function getInitials(firstname: string, lastname?: string): string {
+  if (lastname)
+    return `${firstname.charAt(0).toUpperCase()}${lastname.charAt(0).toUpperCase()}`
+  return firstname.charAt(0).toUpperCase()
 }

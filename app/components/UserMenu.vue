@@ -1,41 +1,59 @@
 <script setup lang="ts">
-import type { DropdownMenuItem } from '@nuxt/ui'
+import type { AvatarProps, DropdownMenuItem } from '@nuxt/ui'
+import ConfirmModal from './ConfirmModal.vue'
 
 defineProps<{
   collapsed?: boolean
 }>()
 
+const { user, clear: clearSession } = useUserSession()
 const colorMode = useColorMode()
 const appConfig = useAppConfig()
+const overlay = useOverlay()
+const { t } = useI18n()
+
+const logoutModal = overlay.create(ConfirmModal, {
+  props: {
+    title: t('logout.modal.title'),
+    description: t('logout.modal.description'),
+    body: t('logout.modal.body'),
+    danger: true,
+    onCancel: () => logoutModal.close(),
+    onConfirm: async () => {
+      logoutModal.close()
+      await clearSession()
+      navigateTo('/login')
+    }
+  }
+})
 
 const colors = ['red', 'orange', 'amber', 'yellow', 'lime', 'green', 'emerald', 'teal', 'cyan', 'sky', 'blue', 'indigo', 'violet', 'purple', 'fuchsia', 'pink', 'rose']
 const neutrals = ['slate', 'gray', 'zinc', 'neutral', 'stone']
 
-const user = ref({
-  name: 'Benjamin Canac',
-  avatar: {
-    src: 'https://github.com/benjamincanac.png',
-    alt: 'Benjamin Canac'
+const userName = computed(() => {
+  if (!user.value)
+    return ''
+  return `${user.value.username}`
+})
+
+const avatar = computed<AvatarProps>(() => {
+  return {
+    text: getInitials(user.value?.username || ''),
+    size: 'xs'
   }
 })
 
 const items = computed<DropdownMenuItem[][]>(() => ([[{
   type: 'label',
-  label: user.value.name,
-  avatar: user.value.avatar
+  label: userName.value,
+  avatar: avatar.value
 }], [{
-  label: 'Profile',
-  icon: 'i-lucide-user'
-}, {
-  label: 'Billing',
-  icon: 'i-lucide-credit-card'
-}, {
   label: 'Settings',
-  icon: 'i-lucide-settings',
+  icon: 'solar:settings-broken',
   to: '/settings'
 }], [{
   label: 'Theme',
-  icon: 'i-lucide-palette',
+  icon: 'solar:palette-broken',
   children: [{
     label: 'Primary',
     slot: 'chip',
@@ -87,7 +105,6 @@ const items = computed<DropdownMenuItem[][]>(() => ([[{
     checked: colorMode.value === 'light',
     onSelect(e: Event) {
       e.preventDefault()
-
       colorMode.preference = 'light'
     }
   }, {
@@ -105,49 +122,11 @@ const items = computed<DropdownMenuItem[][]>(() => ([[{
     }
   }]
 }], [{
-  label: 'Templates',
-  icon: 'i-lucide-layout-template',
-  children: [{
-    label: 'Starter',
-    to: 'https://starter-template.nuxt.dev/'
-  }, {
-    label: 'Landing',
-    to: 'https://landing-template.nuxt.dev/'
-  }, {
-    label: 'Docs',
-    to: 'https://docs-template.nuxt.dev/'
-  }, {
-    label: 'SaaS',
-    to: 'https://saas-template.nuxt.dev/'
-  }, {
-    label: 'Dashboard',
-    to: 'https://dashboard-template.nuxt.dev/',
-    color: 'primary',
-    checked: true,
-    type: 'checkbox'
-  }, {
-    label: 'Chat',
-    to: 'https://chat-template.nuxt.dev/'
-  }, {
-    label: 'Portfolio',
-    to: 'https://portfolio-template.nuxt.dev/'
-  }, {
-    label: 'Changelog',
-    to: 'https://changelog-template.nuxt.dev/'
-  }]
-}], [{
-  label: 'Documentation',
-  icon: 'i-lucide-book-open',
-  to: 'https://ui.nuxt.com/docs/getting-started/installation/nuxt',
-  target: '_blank'
-}, {
-  label: 'GitHub repository',
-  icon: 'i-simple-icons-github',
-  to: 'https://github.com/nuxt-ui-templates/dashboard',
-  target: '_blank'
-}, {
   label: 'Log out',
-  icon: 'i-lucide-log-out'
+  icon: 'i-lucide-log-out',
+  onSelect: () => {
+    logoutModal.open()
+  }
 }]]))
 </script>
 
@@ -160,7 +139,8 @@ const items = computed<DropdownMenuItem[][]>(() => ([[{
     <UButton
       v-bind="{
         ...user,
-        label: collapsed ? undefined : user?.name,
+        avatar,
+        label: collapsed ? undefined : userName,
         trailingIcon: collapsed ? undefined : 'i-lucide-chevrons-up-down'
       }"
       color="neutral"
