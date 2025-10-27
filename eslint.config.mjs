@@ -1,9 +1,23 @@
-// @ts-check
-import withNuxt from './.nuxt/eslint.config.mjs'
+import antfu from '@antfu/eslint-config'
 
-export default withNuxt({
+export default antfu({
+  vue: true,
+  typescript: true,
+
+  stylistic: {
+    indent: 2,
+    semi: false,
+    quotes: 'single'
+  },
+
   rules: {
-    'vue/no-multiple-template-root': 'off',
-    'vue/max-attributes-per-line': ['error', { singleline: 3 }]
-  }
+    'style/comma-dangle': 'off',
+    'node/prefer-global/process': 'off',
+    'no-console': 'warn',
+    'no-unused-vars': ['warn', { argsIgnorePattern: '^_' }]
+  },
+
+  ignores: [
+    'server/db/migrations/**'
+  ]
 })

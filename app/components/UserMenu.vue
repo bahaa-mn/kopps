@@ -141,7 +141,7 @@ const items = computed<DropdownMenuItem[][]>(() => ([[{
         ...user,
         avatar,
         label: collapsed ? undefined : userName,
-        trailingIcon: collapsed ? undefined : 'i-lucide-chevrons-up-down'
+        trailingIcon: collapsed ? undefined : 'i-lucide-chevrons-up-down',
       }"
       color="neutral"
       variant="ghost"
@@ -149,7 +149,7 @@ const items = computed<DropdownMenuItem[][]>(() => ([[{
       :square="collapsed"
       class="data-[state=open]:bg-elevated"
       :ui="{
-        trailingIcon: 'text-dimmed'
+        trailingIcon: 'text-dimmed',
       }"
     />
 
@@ -157,7 +157,7 @@ const items = computed<DropdownMenuItem[][]>(() => ([[{
       <span
         :style="{
           '--chip-light': `var(--color-${(item as any).chip}-500)`,
-          '--chip-dark': `var(--color-${(item as any).chip}-400)`
+          '--chip-dark': `var(--color-${(item as any).chip}-400)`,
         }"
         class="ms-0.5 size-2 rounded-full bg-(--chip-light) dark:bg-(--chip-dark)"
       />

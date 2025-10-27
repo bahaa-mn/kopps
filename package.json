@@ -1,7 +1,8 @@
 {
   "name": "kopps",
-  "private": true,
   "type": "module",
+  "private": true,
+  "packageManager": "pnpm@10.19.0",
   "scripts": {
     "build": "nuxt build",
     "dev": "nuxt dev",
@@ -40,6 +41,5 @@
   },
   "resolutions": {
     "unimport": "4.1.1"
-  },
-  "packageManager": "pnpm@10.19.0"
+  }
 }
