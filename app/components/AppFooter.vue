@@ -7,7 +7,7 @@
   <UFooter>
     <template #left>
       <p class="text-muted text-sm">
-        Vifauto © {{ new Date().getFullYear() }}
+        KOPPS © {{ new Date().getFullYear() }}
       </p>
     </template>
 

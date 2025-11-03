@@ -14,6 +14,7 @@
     "db:migrate": "drizzle-kit migrate"
   },
   "dependencies": {
+    "@nuxt/content": "^3.0.0",
     "@nuxt/image": "^1.11.0",
     "@nuxt/ui": "^4.1.0",
     "@nuxtjs/i18n": "10.1.0",

@@ -14,7 +14,8 @@ export default antfu({
     'style/comma-dangle': 'off',
     'node/prefer-global/process': 'off',
     'no-console': 'warn',
-    'no-unused-vars': ['warn', { argsIgnorePattern: '^_' }]
+    'no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
+    'ts/consistent-type-definitions': 'off'
   },
 
   ignores: [

@@ -1,6 +1,7 @@
 export default defineNuxtConfig({
   modules: [
     '@nuxt/eslint',
+    '@nuxt/content',
     '@nuxt/image',
     '@nuxt/ui',
     '@vueuse/nuxt',
@@ -41,8 +42,8 @@ export default defineNuxtConfig({
     defaultLocale: 'fr',
     strategy: 'no_prefix',
     locales: [
-      { code: 'fr', name: 'Français', file: 'fr/index.ts' }
-      // { code: 'en', name: 'English', file: 'en/index.ts' }
+      { code: 'fr', name: 'Français', file: 'fr/index.ts' },
+      { code: 'en', name: 'English', file: 'en/index.ts' }
     ]
   }
 })
