@@ -9,6 +9,7 @@ hero:
     - "⚡ No account needed."
     - "👟 Fast, simple, free."
   cta:
+    title: "Ready to start your next match?"
     primary: { text: "Create a match now", href: "/create", color: "success" }
     secondary: { text: "Create a free account", href: "/register" }
 ---

@@ -9,6 +9,7 @@ hero:
     - "⚡ Aucun compte nécessaire."
     - "👟 Rapide, simple, gratuit."
   cta:
+    title: "Prêt à lancer ton prochain match ?"
     primary: { text: "Créer un match maintenant", href: "/create", color: "success" }
     secondary: { text: "Créer un compte gratuit", href: "/register" }
 ---

@@ -1,39 +1,39 @@
 <script setup lang="ts">
-defineProps<{ page: any }>()
+import type { LandingContentSchema } from '~~/content/'
+
+defineProps<{ page: LandingContentSchema }>()
 </script>
 
 <template>
   <div>
-    <PageHero v-if="page" :title="page.title" :description="page.description">
+    <UPageHero v-if="page" :title="page.title" :description="page.description">
       <template #subtitle>
         <p v-if="page.hero?.subheading">
           {{ page.hero.subheading }}
         </p>
       </template>
-      <template #actions>
-        <Button color="success">
+      <template #links>
+        <UButton color="success">
           {{ page.hero?.cta?.primary?.text || 'Créer un match maintenant' }}
-        </Button>
-        <Button variant="ghost" to="/register">
+        </UButton>
+        <UButton variant="ghost" to="/register">
           {{ page.hero?.cta?.secondary?.text || 'Créer un compte gratuit' }}
-        </Button>
+        </UButton>
       </template>
-    </PageHero>
+    </UPageHero>
 
-    <PageFeature v-if="page">
+    <UPageFeature v-if="page">
       <template #default>
         <ContentRenderer :value="page" />
       </template>
-    </PageFeature>
+    </UPageFeature>
 
-    <PageCTA v-if="page">
-      <template #default>
-        <h3>{{ page.title }}</h3>
-        <p>{{ page.description }}</p>
-        <Button color="success">
-          {{ page.hero?.cta?.primary?.text }}
-        </Button>
+    <UPageCTA :title="page.hero.cta.title">
+      <template #links>
+        <UButton color="success">
+          {{ page.hero.cta.primary.text }}
+        </UButton>
       </template>
-    </PageCTA>
+    </UPageCTA>
   </div>
 </template>
